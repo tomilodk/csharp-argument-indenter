@@ -2,7 +2,7 @@
     "name": "csharp-argument-indenter",
     "displayName": "C# Argument Indenter",
     "description": "Format C# method arguments with proper indentation",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "engines": {
         "vscode": "^1.60.0"
     },
@@ -16,6 +16,13 @@
     "activationEvents": [
         "onLanguage:csharp"
     ],
+    "publisher": "tomilodk",
+    "icon": "icon.png",
+    "galleryBanner": {
+        "color": "#512BD4",
+        "theme": "dark"
+    },
+    "license": "MIT",
     "main": "./out/extension.js",
     "contributes": {
         "commands": [
@@ -37,7 +44,7 @@
         "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
-        "build-and-install": "vsce package && code --install-extension csharp-argument-indenter-0.0.1.vsix"
+        "build-and-install": "vsce package && code --install-extension csharp-argument-indenter-1.0.0.vsix"
     },
     "devDependencies": {
         "@types/node": "^14.x.x",
