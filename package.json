@@ -27,8 +27,12 @@
     "contributes": {
         "commands": [
             {
-                "command": "csharp-argument-formatter.formatArguments",
+                "command": "csharp-argument-indenter.indentArguments",
                 "title": "Indent Method Arguments"
+            },
+            {
+                "command": "csharp-argument-indenter.formatChain",
+                "title": "Format chaining"
             }
         ],
         "keybindings": [
