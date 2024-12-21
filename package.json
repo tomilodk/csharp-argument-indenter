@@ -1,42 +1,47 @@
 {
-  "name": "csharp-argument-indenter",
-  "displayName": "C# Argument Formatter",
-  "description": "Format C# method arguments with proper indentation",
-  "version": "0.0.1",
-  "engines": {
-      "vscode": "^1.60.0"
-  },
-  "categories": [
-      "Formatters"
-  ],
-  "activationEvents": [
-      "onLanguage:csharp"
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-      "commands": [
-          {
-              "command": "csharp-argument-formatter.formatArguments",
-              "title": "Format Method Arguments"
-          }
-      ],
-      "keybindings": [
-          {
-              "command": "csharp-argument-formatter.formatArguments",
-              "key": "ctrl+alt+f",
-              "mac": "cmd+alt+f",
-              "when": "editorTextFocus && editorLangId == 'csharp'"
-          }
-      ]
-  },
-  "scripts": {
-      "vscode:prepublish": "npm run compile",
-      "compile": "tsc -p ./",
-      "watch": "tsc -watch -p ./"
-  },
-  "devDependencies": {
-      "@types/node": "^14.x.x",
-      "@types/vscode": "^1.60.0",
-      "typescript": "^4.x.x"
-  }
+    "name": "csharp-argument-indenter",
+    "displayName": "C# Argument Indenter",
+    "description": "Format C# method arguments with proper indentation",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.60.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tomilodk/csharp-argument-indenter"
+    },
+    "categories": [
+        "Formatters"
+    ],
+    "activationEvents": [
+        "onLanguage:csharp"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "csharp-argument-formatter.formatArguments",
+                "title": "Indent Method Arguments"
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "csharp-argument-indenter.indentArguments",
+                "key": "ctrl+[Backquote]",
+                "mac": "ctrl+[Backquote]",
+                "when": "editorTextFocus && editorLangId == 'csharp'"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "build-and-install": "vsce package && code --install-extension csharp-argument-indenter-0.0.1.vsix"
+    },
+    "devDependencies": {
+        "@types/node": "^14.x.x",
+        "@types/vscode": "^1.60.0",
+        "typescript": "^4.x.x"
+    }
 }
