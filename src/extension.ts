@@ -2,8 +2,11 @@ import * as vscode from 'vscode';
 import { TextEditor, TextEditorEdit, Selection, Position } from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
+    console.log('Activating csharp-argument-indenter extension');
+
     // Register the argument formatting command
     let formatArgs = vscode.commands.registerCommand('csharp-argument-indenter.indentArguments', () => {
+        console.log('indentArguments command triggered');
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
             return;
@@ -13,6 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Register the chain formatting command
     let formatChain = vscode.commands.registerCommand('csharp-argument-indenter.formatChain', () => {
+        console.log('formatChain command triggered');
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
             return;
@@ -21,6 +25,7 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     context.subscriptions.push(formatArgs, formatChain);
+    console.log('Commands registered');
 }
 
 function formatMethodChainInEditor(editor: TextEditor) {

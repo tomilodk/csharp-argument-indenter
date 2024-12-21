@@ -41,6 +41,12 @@
                 "key": "ctrl+[Backquote]",
                 "mac": "ctrl+[Backquote]",
                 "when": "editorTextFocus && editorLangId == 'csharp'"
+            },
+            {
+                "command": "csharp-argument-indenter.formatChain",
+                "key": "ctrl+shift+[Backquote]",
+                "mac": "ctrl+shift+[Backquote]",
+                "when": "editorTextFocus && editorLangId == 'csharp'"
             }
         ]
     },
