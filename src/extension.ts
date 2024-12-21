@@ -59,21 +59,28 @@ function formatArgumentsInEditor(editor: TextEditor) {
 function handleMethodChain(text: string): string {
     console.log('Original text:', text);
     
+    // First check if this line contains method calls
+    if (!text.includes('(')) {
+        console.log('No method calls found');
+        return text;
+    }
+
+    // Count actual method calls in chain
+    const methodCalls = text.match(/\.\w+\s*\(/g) || [];
+    if (methodCalls.length < 2) {
+        console.log('Less than 2 method calls found, not a chain');
+        return text;
+    }
+    
     // Split the text into parts we can work with
-    const varMatch = text.match(/^(\s*)(var\s+)?(\w+\s*=\s*)?(\w+)(.*)$/);
-    if (!varMatch) {
+    const baseMatch = text.match(/^(\s*)(.+?)(\w+)(\.\w+\s*\(.+)$/);
+    if (!baseMatch) {
         console.log('No basic match found');
         return text;
     }
 
-    const [_, indent, varKeyword = '', assignment = '', identifier, rest] = varMatch;
-    console.log('Basic parts:', { indent, varKeyword, assignment, identifier, rest });
-
-    // Check if this is actually a method chain
-    if (!rest.includes('.')) {
-        console.log('No method chain found');
-        return text;
-    }
+    const [_, indent = '', prefix = '', identifier, rest] = baseMatch;
+    console.log('Basic parts:', { indent, prefix, identifier, rest });
 
     // Build parts array
     const methodParts: string[] = [];
@@ -91,11 +98,23 @@ function handleMethodChain(text: string): string {
         
         // If we find a dot at the base level (not in parens or lambda)
         if (char === '.' && parenLevel === 0 && lambdaLevel === 0) {
-            if (currentPart.trim()) {
-                methodParts.push(currentPart.trim());
+            // Look ahead to see if this dot is followed by a method call
+            let isMethod = false;
+            for (let j = i + 1; j < rest.length; j++) {
+                if (rest[j] === '(') {
+                    isMethod = true;
+                    break;
+                }
+                if (rest[j] === '.' || rest[j] === ';') break;
             }
-            currentPart = '';
-            continue;
+            
+            if (isMethod) {
+                if (currentPart.trim()) {
+                    methodParts.push(currentPart.trim());
+                }
+                currentPart = '';
+                continue;
+            }
         }
         
         currentPart += char;
@@ -117,7 +136,7 @@ function handleMethodChain(text: string): string {
     }
 
     // Find position of the first dot for alignment
-    const beforeDot = indent + varKeyword + assignment + identifier;
+    const beforeDot = indent + prefix + identifier;
     const dotPosition = beforeDot.length;
     const dotIndent = ' '.repeat(dotPosition);
 
