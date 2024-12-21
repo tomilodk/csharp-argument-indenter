@@ -84,7 +84,7 @@ function formatMethodArguments(text: string): string {
 
     // Calculate proper indentation
     const baseIndent = beforeMethod.match(/^\s*/)?.[0] || '';
-    const argumentIndent = ' '.repeat(baseIndent.length + 12); // Standard 4-space indent × 3
+    const argumentIndent = baseIndent + ' '.repeat(4); // One level of indentation (4 spaces)
 
     // Format arguments
     const formattedArgs = splitArgs
@@ -94,7 +94,7 @@ function formatMethodArguments(text: string): string {
         )
         .join(',\n');
 
-    return `${beforeMethod}${methodName}${formattedArgs}\n${baseIndent}${')'}${afterMethod}`;
+    return `${beforeMethod}${methodName}${formattedArgs}\n${baseIndent})${afterMethod}`;
 }
 
 export function deactivate() {}
