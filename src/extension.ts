@@ -107,21 +107,22 @@ function handleMethodChain(text: string): string {
 
     console.log('Chain parts:', methodParts);
 
-    // Remove any empty parts
-    const cleanParts = methodParts.filter(p => p.trim().length > 0);
+    // Remove any empty parts and extra dots
+    const cleanParts = methodParts.filter(p => p.trim().length > 0)
+                                .map(p => p.startsWith('.') ? p.substring(1) : p);
     
     if (cleanParts.length <= 1) {
         console.log('Not enough chain parts');
         return text;
     }
 
-    // Calculate the indentation for alignment
-    const firstPartWithAssignment = (varKeyword + assignment + identifier + "." + cleanParts[0]).trim();
-    const dotAlignPosition = indent.length + firstPartWithAssignment.length;
-    const dotIndent = ' '.repeat(dotAlignPosition);
+    // Find position of the first dot for alignment
+    const beforeDot = indent + varKeyword + assignment + identifier;
+    const dotPosition = beforeDot.length;
+    const dotIndent = ' '.repeat(dotPosition);
 
     // Format the output keeping first method on same line
-    const formattedText = indent + varKeyword + assignment + identifier + "." + cleanParts[0] + 
+    const formattedText = beforeDot + "." + cleanParts[0] + 
         cleanParts.slice(1).map(part => `\n${dotIndent}.${part}`).join('');
 
     console.log('Formatted result:', formattedText);
