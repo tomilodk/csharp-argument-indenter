@@ -57,33 +57,44 @@ function formatArgumentsInEditor(editor: TextEditor) {
 }
 
 function handleMethodChain(text: string): string {
-    // Improved regex to handle assignments and complex expressions
-    const assignmentMatch = text.match(/^(\s*)(.+?=\s*)?(.+?)(\.[\w<>]+\([^()]*(?:\([^()]*\)[^()]*)*\))+$/);
-    if (!assignmentMatch) return text;
-
-    const [fullMatch, indent = '', assignment = '', firstPart] = assignmentMatch;
-
-    // Find start of the chain (where we have the cursor)
-    const chain = text.substring(indent.length);
+    console.log('Original text:', text);
     
-    // Split the chain into parts while preserving nested parentheses
-    const parts: string[] = [];
-    let currentPart = '';
-    let parenCount = 0;
-    let inChain = false;
+    // Split the text into parts we can work with
+    const varMatch = text.match(/^(\s*)(var\s+)?(\w+\s*=\s*)?(\w+)(.*)$/);
+    if (!varMatch) {
+        console.log('No basic match found');
+        return text;
+    }
 
-    for (let i = 0; i < chain.length; i++) {
-        const char = chain[i];
+    const [_, indent, varKeyword = '', assignment = '', identifier, rest] = varMatch;
+    console.log('Basic parts:', { indent, varKeyword, assignment, identifier, rest });
+
+    // Check if this is actually a method chain
+    if (!rest.includes('.')) {
+        console.log('No method chain found');
+        return text;
+    }
+
+    // Build parts array
+    const methodParts: string[] = [];
+    let currentPart = '';
+    let parenLevel = 0;
+    let lambdaLevel = 0;
+
+    for (let i = 0; i < rest.length; i++) {
+        const char = rest[i];
         
-        if (char === '(') parenCount++;
-        else if (char === ')') parenCount--;
+        if (char === '(') parenLevel++;
+        else if (char === ')') parenLevel--;
+        else if (char === '{') lambdaLevel++;
+        else if (char === '}') lambdaLevel--;
         
-        if (char === '.' && parenCount === 0) {
+        // If we find a dot at the base level (not in parens or lambda)
+        if (char === '.' && parenLevel === 0 && lambdaLevel === 0) {
             if (currentPart.trim()) {
-                parts.push(currentPart);
-                currentPart = '';
+                methodParts.push(currentPart.trim());
             }
-            inChain = true;
+            currentPart = '';
             continue;
         }
         
@@ -91,23 +102,30 @@ function handleMethodChain(text: string): string {
     }
     
     if (currentPart.trim()) {
-        parts.push(currentPart);
+        methodParts.push(currentPart.trim());
     }
 
-    if (parts.length <= 1) return text;
+    console.log('Chain parts:', methodParts);
 
-    // Get the base indentation and calculate alignment
-    const firstPartWithAssignment = parts[0].trim();
+    // Remove any empty parts
+    const cleanParts = methodParts.filter(p => p.trim().length > 0);
+    
+    if (cleanParts.length <= 1) {
+        console.log('Not enough chain parts');
+        return text;
+    }
+
+    // Calculate the indentation for alignment
+    const firstPartWithAssignment = (varKeyword + assignment + identifier + "." + cleanParts[0]).trim();
     const dotAlignPosition = indent.length + firstPartWithAssignment.length;
     const dotIndent = ' '.repeat(dotAlignPosition);
 
-    // Format the chain
-    return parts
-        .map((part, index) => {
-            if (index === 0) return indent + part.trim();
-            return `\n${dotIndent}.${part.trim()}`;
-        })
-        .join('');
+    // Format the output keeping first method on same line
+    const formattedText = indent + varKeyword + assignment + identifier + "." + cleanParts[0] + 
+        cleanParts.slice(1).map(part => `\n${dotIndent}.${part}`).join('');
+
+    console.log('Formatted result:', formattedText);
+    return formattedText;
 }
 
 function formatMethodArguments(text: string): string {
