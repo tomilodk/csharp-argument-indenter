@@ -2,30 +2,26 @@ import * as vscode from 'vscode';
 import { TextEditor, TextEditorEdit, Selection, Position } from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
-    console.log('Activating csharp-argument-indenter extension');
-
-    // Register the argument formatting command
-    let formatArgs = vscode.commands.registerCommand('csharp-argument-indenter.indentArguments', () => {
-        console.log('indentArguments command triggered');
+    // Register the smart formatting command
+    let formatSmart = vscode.commands.registerCommand('csharp-argument-indenter.formatSmart', () => {
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
             return;
         }
-        formatArgumentsInEditor(editor);
-    });
-
-    // Register the chain formatting command
-    let formatChain = vscode.commands.registerCommand('csharp-argument-indenter.formatChain', () => {
-        console.log('formatChain command triggered');
-        const editor = vscode.window.activeTextEditor;
-        if (!editor) {
-            return;
+        
+        // Get the current line text
+        const lineText = editor.document.lineAt(editor.selection.active.line).text;
+        
+        // Check for method chaining (two or more method calls)
+        const methodCalls = lineText.match(/\.\w+\s*\(/g) || [];
+        if (methodCalls.length >= 2) {
+            formatMethodChainInEditor(editor);
+        } else {
+            formatArgumentsInEditor(editor);
         }
-        formatMethodChainInEditor(editor);
     });
 
-    context.subscriptions.push(formatArgs, formatChain);
-    console.log('Commands registered');
+    context.subscriptions.push(formatSmart);
 }
 
 function formatMethodChainInEditor(editor: TextEditor) {
@@ -153,7 +149,6 @@ function formatMethodArguments(text: string): string {
     const chainFormatted = handleMethodChain(text);
     if (chainFormatted !== text) return chainFormatted;
 
-    // If not a chain, proceed with regular argument formatting
     // Function to count opening parentheses before a position
     const countOpenParens = (str: string, pos: number): number => {
         let count = 0;

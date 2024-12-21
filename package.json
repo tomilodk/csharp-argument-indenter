@@ -27,25 +27,15 @@
     "contributes": {
         "commands": [
             {
-                "command": "csharp-argument-indenter.indentArguments",
-                "title": "Indent Method Arguments"
-            },
-            {
-                "command": "csharp-argument-indenter.formatChain",
-                "title": "Format chaining"
+                "command": "csharp-argument-indenter.formatSmart",
+                "title": "Format C# Smart"
             }
         ],
         "keybindings": [
             {
-                "command": "csharp-argument-indenter.indentArguments",
+                "command": "csharp-argument-indenter.formatSmart",
                 "key": "ctrl+[Backquote]",
                 "mac": "ctrl+[Backquote]",
-                "when": "editorTextFocus && editorLangId == 'csharp'"
-            },
-            {
-                "command": "csharp-argument-indenter.formatChain",
-                "key": "ctrl+shift+[Backquote]",
-                "mac": "ctrl+shift+[Backquote]",
                 "when": "editorTextFocus && editorLangId == 'csharp'"
             }
         ]
