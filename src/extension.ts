@@ -219,7 +219,7 @@ function formatMethodArguments(text: string): string {
         )
         .join(',\n');
 
-    return `${beforeMethod}${methodName}${formattedArgs}\n${baseIndent})${afterMethod}`;
+    return `${beforeMethod}${methodName}${formattedArgs})${afterMethod}`;
 }
 
 export function deactivate() {}
